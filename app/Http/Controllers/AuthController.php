@@ -27,12 +27,13 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        // trigger event for new registered user to send email verification
-        event(new Registered($user));
 
         $this->createInitialFile($user);
 
         $request->session()->regenerate();
+        
+        // send email for verification
+        $user->sendEmailVerificationNotification();
 
         return redirect()->intended('myfiles');
 
